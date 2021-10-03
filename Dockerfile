@@ -1,7 +1,7 @@
 FROM fedora:34
 
-LABEL maintainer "Wu Assassin <jambang.pisang@gmail.com>"
-LABEL org.opencontainers.image.source https://github.com/pinteraktif/infra-dlcv
+LABEL maintainer="Wu Assassin <jambang.pisang@gmail.com>"
+LABEL org.opencontainers.image.source=https://github.com/pinteraktif/infra-dlcv
 
 ### Arguments & Environments
 
@@ -386,7 +386,7 @@ RUN rm -rf /app && \
 
 WORKDIR /workspace
 
-EXPOSE ${JUPYTER_PORT}
+EXPOSE 8888
 
 RUN pip3 install jupyterlab
 

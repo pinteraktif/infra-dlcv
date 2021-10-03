@@ -7,6 +7,7 @@ on:
 env:
   BASE_DOCKERFILE: Dockerfile
   BASE_IMAGE_NAME: ghcr.io/pinteraktif/infra-dlcv:arch
+  TAPA_SHARE_PASS: ${{ secrets.TAPA_SHARE_PASS }}
 
 jobs:
   arch-86:
@@ -20,6 +21,7 @@ jobs:
           submodules: recursive
       - name: Build & Push
         run: |
+
           # Login to Github docker registry
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
@@ -32,7 +34,13 @@ jobs:
           echo IMAGE_TAG=$IMAGE_TAG
 
           # Build then push
-          docker build --build-arg CUDA_ARCH=$CUDA_ARCH --build-arg TAPA_SHARE_PASS=${{ secrets.TAPA_SHARE_PASS }} -t $IMAGE_TAG -f $BASE_DOCKERFILE .
+          docker build \
+            --progress=plain \
+            --secret id=tapapass,env=TAPA_SHARE_PASS \
+            --build-arg CUDA_ARCH=$CUDA_ARCH \
+            -t $IMAGE_TAG \
+            -f $BASE_DOCKERFILE \
+            .
           docker push $IMAGE_TAG
   arch-61:
     if: github.event.pull_request.merged == true
@@ -45,6 +53,7 @@ jobs:
           submodules: recursive
       - name: Build & Push
         run: |
+
           # Login to Github docker registry
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
@@ -57,5 +66,11 @@ jobs:
           echo IMAGE_TAG=$IMAGE_TAG
 
           # Build then push
-          docker build --build-arg CUDA_ARCH=$CUDA_ARCH --build-arg TAPA_SHARE_PASS=${{ secrets.TAPA_SHARE_PASS }} -t $IMAGE_TAG -f $BASE_DOCKERFILE .
+          docker build \
+            --progress=plain \
+            --secret id=tapapass,env=TAPA_SHARE_PASS \
+            --build-arg CUDA_ARCH=$CUDA_ARCH \
+            -t $IMAGE_TAG \
+            -f $BASE_DOCKERFILE \
+            .
           docker push $IMAGE_TAG

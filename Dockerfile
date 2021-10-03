@@ -16,7 +16,6 @@ ENV LD_LIBRARY_PATH="/usr/local/cuda/compat/lib:/usr/local/nvidia/lib:/usr/local
 ENV PATH="/root/.cargo/bin${PATH:+:}${PATH}"
 ENV PATH="/usr/local/nvidia/bin:${PATH}"
 ENV PATH="/usr/local/cuda/bin:${PATH}"
-ENV NVCCPARAMS="-O3 -gencode arch=compute_${CUDA_ARCH},code=sm_${CUDA_ARCH}"
 
 ### Install system packages
 
@@ -249,6 +248,8 @@ RUN dnf install -y \
     ./nvhpc-21-9-21.9-1.x86_64.rpm
 
 ### Source Codes
+
+ENV NVCCPARAMS="-O3 -gencode arch=compute_${CUDA_ARCH},code=sm_${CUDA_ARCH}"
 
 WORKDIR /app/source
 

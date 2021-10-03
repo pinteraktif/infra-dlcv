@@ -134,6 +134,7 @@ RUN dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-re
     nasm \
     ncdu \
     ninja-build \
+    nodejs \
     numactl-devel \
     nv-codec-headers \
     openblas-devel \
@@ -387,7 +388,7 @@ WORKDIR /workspace
 
 EXPOSE ${JUPYTER_PORT}
 
-RUN pip3 install jupyter
+RUN pip3 install jupyterlab
 
 ### Print Info
 

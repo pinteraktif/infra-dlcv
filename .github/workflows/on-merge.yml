@@ -1,0 +1,76 @@
+name: On PR Merge
+
+on:
+  pull_request:
+    types: [closed]
+
+env:
+  BASE_DOCKERFILE: Dockerfile
+  BASE_IMAGE_NAME: ghcr.io/pinteraktif/infra-dlcv:arch
+  TAPA_SHARE_PASS: ${{ secrets.TAPA_SHARE_PASS }}
+
+jobs:
+  arch-86:
+    if: github.event.pull_request.merged == true
+    runs-on: [self-hosted, linux, x64, gpu]
+    env:
+      CUDA_ARCH: 86
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Build & Push
+        run: |
+
+          # Login to Github docker registry
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+          # Compose proper Image ID
+          IMAGE_TAG=$BASE_IMAGE_NAME-$CUDA_ARCH
+
+          # Change all uppercase to lowercase
+          IMAGE_TAG=$(echo $IMAGE_TAG | tr '[A-Z]' '[a-z]')
+
+          echo IMAGE_TAG=$IMAGE_TAG
+
+          # Build then push
+          docker build \
+            --progress=plain \
+            --secret id=tapapass,env=TAPA_SHARE_PASS \
+            --build-arg CUDA_ARCH=$CUDA_ARCH \
+            -t $IMAGE_TAG \
+            -f $BASE_DOCKERFILE \
+            .
+          docker push $IMAGE_TAG
+  arch-61:
+    if: github.event.pull_request.merged == true
+    runs-on: [self-hosted, linux, x64, gpu]
+    env:
+      CUDA_ARCH: 61
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Build & Push
+        run: |
+
+          # Login to Github docker registry
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+          # Compose proper Image ID
+          IMAGE_TAG=$BASE_IMAGE_NAME-$CUDA_ARCH
+
+          # Change all uppercase to lowercase
+          IMAGE_TAG=$(echo $IMAGE_TAG | tr '[A-Z]' '[a-z]')
+
+          echo IMAGE_TAG=$IMAGE_TAG
+
+          # Build then push
+          docker build \
+            --progress=plain \
+            --secret id=tapapass,env=TAPA_SHARE_PASS \
+            --build-arg CUDA_ARCH=$CUDA_ARCH \
+            -t $IMAGE_TAG \
+            -f $BASE_DOCKERFILE \
+            .
+          docker push $IMAGE_TAG

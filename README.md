@@ -8,8 +8,9 @@
 - **FFmpeg** `n4.4`
 - **GCC** `11.2.1`
 - **HPC-SDK** `21-9-21.9-1`
-- **Jupyter Notebook** `v6.4.4`
+- **Jupyter Lab** `v3.1.14`
 - **LLVM** `12.0.1`
+- **Node.js** `14.17.6`
 - **nv-codec-headers** `n11.1.5.0`
 - **OpenCV** `4.5.3` with `extras`
 - **Python** `3.9.7`
@@ -25,7 +26,8 @@
 - [dav1d](https://github.com/videolan/dav1d/blob/master/COPYING)
 - [FFmpeg](https://github.com/FFmpeg/FFmpeg/blob/master/LICENSE.md)
 - [HPC-SDK](https://docs.nvidia.com/hpc-sdk/eula/index.html)
-- [Jupyter Notebook](https://github.com/jupyter/notebook/blob/master/LICENSE)
+- [Jupyter Lab](https://github.com/jupyterlab/jupyterlab/blob/master/LICENSE)
+- [Node.js](https://github.com/nodejs/node/blob/master/LICENSE)
 - [OpenCV](https://github.com/opencv/opencv/blob/master/LICENSE)
 - [SVT-AV1](https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/LICENSE.md)
 - [TensorRT](https://developer.nvidia.com/compute/machine-learning/tensorrt/secure/8.2.0/tensorrt-sla.pdf)

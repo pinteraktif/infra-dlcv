@@ -1,12 +1,11 @@
 FROM fedora:34
 
-LABEL maintainer "Wu Assassin <jambang.pisang@gmail.com>"
-LABEL org.opencontainers.image.source https://github.com/pinteraktif/infra-dlcv
+LABEL maintainer="Wu Assassin <jambang.pisang@gmail.com>"
+LABEL org.opencontainers.image.source=https://github.com/pinteraktif/infra-dlcv
 
 ### Arguments & Environments
 
 ARG CUDA_ARCH
-ARG TAPA_SHARE_PASS
 
 ENV LC_ALL="C.UTF-8"
 ENV CUDA_HOME="/usr/local/cuda"
@@ -17,7 +16,6 @@ ENV LD_LIBRARY_PATH="/usr/local/cuda/compat/lib:/usr/local/nvidia/lib:/usr/local
 ENV PATH="/root/.cargo/bin${PATH:+:}${PATH}"
 ENV PATH="/usr/local/nvidia/bin:${PATH}"
 ENV PATH="/usr/local/cuda/bin:${PATH}"
-ENV NVCCPARAMS="-O3 -gencode arch=compute_${CUDA_ARCH},code=sm_${CUDA_ARCH}"
 
 ### Install system packages
 
@@ -134,6 +132,7 @@ RUN dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-re
     nasm \
     ncdu \
     ninja-build \
+    nodejs \
     numactl-devel \
     nv-codec-headers \
     openblas-devel \
@@ -197,11 +196,13 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --defau
 
 WORKDIR /app/downloads
 
-RUN mkdir temp && \
+RUN mkdir temp
+
+RUN --mount=type=secret,id=tapapass \
     aria2c -x 16 -s 16 \
     --force-sequential \
     --http-user="pinteraktif" \
-    --http-passwd="${TAPA_SHARE_PASS}" \
+    --http-passwd=$(cat /run/secrets/tapapass) \
     https://share.tapalogi.com/nvidia/cuda_11.4.2_470.57.02_linux.run \
     https://share.tapalogi.com/nvidia/libcudnn8-8.2.4.15-1.cuda11.4.x86_64.rpm \
     https://share.tapalogi.com/nvidia/libcudnn8-devel-8.2.4.15-1.cuda11.4.x86_64.rpm \
@@ -247,6 +248,8 @@ RUN dnf install -y \
     ./nvhpc-21-9-21.9-1.x86_64.rpm
 
 ### Source Codes
+
+ENV NVCCPARAMS="-O3 -gencode arch=compute_${CUDA_ARCH},code=sm_${CUDA_ARCH}"
 
 WORKDIR /app/source
 
@@ -330,7 +333,7 @@ RUN cd opencv && \
     cmake -D CMAKE_BUILD_TYPE="Release" \
     -D BUILD_DOCS="ON" \
     -D BUILD_EXAMPLES="OFF" \
-    -D BUILD_NEW_PYTHON_SUPPORT="ON" \ 
+    -D BUILD_NEW_PYTHON_SUPPORT="ON" \
     -D BUILD_opencv_cudacodec="ON" \
     -D BUILD_opencv_python2="OFF" \
     -D BUILD_opencv_python3="ON" \
@@ -385,9 +388,9 @@ RUN rm -rf /app && \
 
 WORKDIR /workspace
 
-EXPOSE ${JUPYTER_PORT}
+EXPOSE 8888
 
-RUN pip3 install jupyter
+RUN pip3 install jupyterlab
 
 ### Print Info
 
